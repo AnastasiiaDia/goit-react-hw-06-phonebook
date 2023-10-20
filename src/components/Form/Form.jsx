@@ -1,17 +1,21 @@
-import { useState } from 'react';
 import { Button, FormEl, Input } from './FormElements.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts, getName, getNumber } from 'redux/selector';
+import { addContact, addName, addNumber } from 'redux/actions';
 
-export function Form({ onAddContact }) {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+export function Form() {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const name = useSelector(getName);
+  const number = useSelector(getNumber);
 
   const onChangeInputValue = event => {
     switch (event.target.name) {
       case 'name':
-        setName(event.target.value);
+        dispatch(addName(event.target.value));
         break;
       case 'number':
-        setNumber(event.target.value);
+        dispatch(addNumber(event.target.value));
         break;
       default:
         break;
@@ -20,11 +24,14 @@ export function Form({ onAddContact }) {
 
   const onFormSubmit = event => {
     event.preventDefault();
+    const form = event.target;
     const addedContact = { name, number };
-    onAddContact(addedContact);
+    form.reset();
 
-    setName('');
-    setNumber('');
+    if (contacts.some(({ name }) => addedContact.name === name)) {
+      return alert(`${addedContact.name} is alrady in your contacts`);
+    }
+    dispatch(addContact(addedContact));
   };
 
   return (
@@ -36,7 +43,6 @@ export function Form({ onAddContact }) {
           type="text"
           name="name"
           required
-          value={name}
           onChange={onChangeInputValue}
           placeholder="Diana Ivanova"
         />
@@ -45,7 +51,6 @@ export function Form({ onAddContact }) {
           type="tel"
           name="number"
           required
-          value={number}
           onChange={onChangeInputValue}
           placeholder="123-45-67"
         />

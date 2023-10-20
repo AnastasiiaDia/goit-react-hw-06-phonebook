@@ -6,7 +6,9 @@ const Contact = ({ name, id, number, onDeleteContact }) => {
     <Li>
       <span>{name}</span>
       <span>{number}</span>
-      <Button onClick={() => onDeleteContact(id)}>Delete</Button>
+      <Button type="button" onClick={() => onDeleteContact(id)}>
+        Delete
+      </Button>
     </Li>
   );
 };
